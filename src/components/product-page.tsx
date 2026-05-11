@@ -71,7 +71,7 @@ export function ProductPage({ product }: ProductPageProps) {
               <div className="mt-6">
                 <Link
                   href="#quote-request"
-                  className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-6 py-4 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-slate-800 sm:w-auto sm:text-base"
+                  className="inline-flex w-full items-center justify-center rounded-2xl bg-blue-700 px-6 py-4 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-800 sm:w-auto sm:text-base"
                 >
                   이 제품 견적 문의하기
                 </Link>
