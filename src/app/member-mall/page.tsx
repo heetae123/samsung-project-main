@@ -5,7 +5,7 @@ import { LayoutGrid, Lock, Monitor, MonitorSmartphone, ShieldCheck, TabletSmartp
 import { JsonLd } from '@/components/json-ld';
 import { MemberPriceDisplay } from '@/components/member-price-display';
 import { MemberSessionBanner } from '@/components/member-session-banner';
-import { ProductCard } from '@/components/product-card';
+import { MemberProductCard } from '@/components/member-product-card';
 import { getMemberMallDeals } from '@/lib/admin-store';
 import {
   memberBenefits,
@@ -168,7 +168,7 @@ export default async function MemberMallPage({
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
-                <ProductCard key={product.slug} product={product} />
+                <MemberProductCard key={product.slug} product={product} />
               ))
             ) : (
               <div className="col-span-3 py-20 text-center text-slate-500">
