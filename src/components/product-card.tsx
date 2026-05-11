@@ -4,11 +4,22 @@ import { ArrowUpRight, CheckCircle2 } from 'lucide-react';
 
 import type { ProductItem } from '@/lib/site';
 
+const tagToSolutionSlug: Record<string, string> = {
+  '객실관리 시스템': 'room-management',
+  '호텔락 시스템': 'hotel-lock',
+  'QR·키리스 호텔락': 'hotel-lock',
+  '운영관리 프로그램': 'operation-management',
+  '무인 키오스크': 'kiosk',
+  '무인 관제 서비스': 'remote-monitoring',
+  '기타 자재': 'misc-materials',
+};
+
 type ProductCardProps = {
   product: ProductItem;
 };
 
 export function ProductCard({ product }: ProductCardProps) {
+  const solutionSlug = tagToSolutionSlug[product.tag] || 'room-management';
   return (
     <article className="motion-card-lift group flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
       <div className="border-b border-slate-100 bg-[#f3f7ff] p-4">
@@ -38,7 +49,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </ul>
         <div className="mt-8">
           <Link
-            href={`/products/${product.slug}`}
+            href={`/solutions/${solutionSlug}`}
             className="inline-flex items-center gap-2 text-sm font-semibold text-slate-950 transition-colors hover:text-blue-700"
           >
             자세히 보기

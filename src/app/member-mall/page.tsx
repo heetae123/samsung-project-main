@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Lock, Monitor, MonitorSmartphone, ShieldCheck, TabletSmartphone, Wrench } from 'lucide-react';
+import { LayoutGrid, Lock, Monitor, MonitorSmartphone, ShieldCheck, TabletSmartphone, Wrench } from 'lucide-react';
 
 import { JsonLd } from '@/components/json-ld';
 import { MemberPriceDisplay } from '@/components/member-price-display';
@@ -24,6 +24,15 @@ const categoryIcons: Record<string, any> = {
   'misc-materials': Wrench,
 };
 
+const categoryTagMap: Record<string, string[]> = {
+  'room-management': ['객실관리 시스템'],
+  'hotel-lock': ['호텔락 시스템', 'QR·키리스 호텔락'],
+  'operation-management': ['운영관리 프로그램'],
+  'kiosk': ['무인 키오스크'],
+  'remote-monitoring': ['무인 관제 서비스'],
+  'misc-materials': ['기타 자재'],
+};
+
 export const metadata: Metadata = {
   title: '회원몰',
   description:
@@ -35,8 +44,18 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-export default async function MemberMallPage() {
+export default async function MemberMallPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const memberDeals = await getMemberMallDeals();
+  const resolvedSearchParams = await searchParams;
+  const currentCategory = (resolvedSearchParams?.category as string) || 'all';
+  const validTags = currentCategory !== 'all' ? categoryTagMap[currentCategory] : null;
+  const filteredProducts = validTags 
+    ? products.filter(p => validTags.includes(p.tag))
+    : products;
 
   return (
     <>
@@ -97,21 +116,65 @@ export default async function MemberMallPage() {
           </div>
 
           <div className="mt-10 flex flex-wrap justify-center gap-8 sm:gap-12">
+            <Link
+              href="/member-mall"
+              scroll={false}
+              className={`group flex flex-col items-center gap-4 transition-transform hover:-translate-y-1`}
+            >
+              <div className={`flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border transition-all sm:h-20 sm:w-20 ${
+                currentCategory === 'all'
+                  ? 'border-blue-700 bg-blue-700 text-white shadow-md'
+                  : 'border-slate-200 bg-white text-slate-600 group-hover:border-blue-700 group-hover:bg-blue-700 group-hover:text-white group-hover:shadow-md'
+              }`}>
+                <LayoutGrid className="h-7 w-7 sm:h-8 sm:w-8" />
+              </div>
+              <span className={`text-[15px] font-semibold ${
+                currentCategory === 'all' ? 'text-blue-700' : 'text-slate-950'
+              }`}>All Products</span>
+            </Link>
+
             {systemLandings.map((landing) => {
               const Icon = categoryIcons[landing.slug] || Monitor;
+              const isActive = currentCategory === landing.slug;
               return (
                 <Link
                   key={landing.slug}
-                  href={landing.href}
-                  className="group flex flex-col items-center gap-4 transition-transform hover:-translate-y-1"
+                  href={`/member-mall?category=${landing.slug}`}
+                  scroll={false}
+                  className={`group flex flex-col items-center gap-4 transition-transform hover:-translate-y-1`}
                 >
-                  <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full bg-white border border-slate-200 text-slate-600 shadow-sm transition-all group-hover:border-blue-700 group-hover:bg-blue-700 group-hover:text-white group-hover:shadow-md sm:h-20 sm:w-20">
+                  <div className={`flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border transition-all sm:h-20 sm:w-20 ${
+                    isActive
+                      ? 'border-blue-700 bg-blue-700 text-white shadow-md'
+                      : 'border-slate-200 bg-white text-slate-600 group-hover:border-blue-700 group-hover:bg-blue-700 group-hover:text-white group-hover:shadow-md'
+                  }`}>
                     <Icon className="h-7 w-7 sm:h-8 sm:w-8" />
                   </div>
-                  <span className="text-[15px] font-semibold text-slate-950">{landing.title}</span>
+                  <span className={`text-[15px] font-semibold ${
+                    isActive ? 'text-blue-700' : 'text-slate-950'
+                  }`}>{landing.title}</span>
                 </Link>
               );
             })}
+          </div>
+
+          <div className="mt-24 max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-blue-700">All products</p>
+            <h2 className="font-display mt-5 text-4xl font-bold tracking-[-0.06em] text-slate-950 sm:text-5xl">
+              회원몰에서도 모든 제품을 가격과 함께 비교할 수 있습니다
+            </h2>
+          </div>
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <ProductCard key={product.slug} product={product} />
+              ))
+            ) : (
+              <div className="col-span-3 py-20 text-center text-slate-500">
+                해당 카테고리에 등록된 제품이 없습니다.
+              </div>
+            )}
           </div>
 
           <div className="mt-20 max-w-3xl">

@@ -16,6 +16,15 @@ const categoryIcons: Record<string, any> = {
   'misc-materials': Wrench,
 };
 
+const categoryTagMap: Record<string, string[]> = {
+  'room-management': ['객실관리 시스템'],
+  'hotel-lock': ['호텔락 시스템', 'QR·키리스 호텔락'],
+  'operation-management': ['운영관리 프로그램'],
+  'kiosk': ['무인 키오스크'],
+  'remote-monitoring': ['무인 관제 서비스'],
+  'misc-materials': ['기타 자재'],
+};
+
 export const metadata: Metadata = {
   title: '제품·서비스',
   description:
@@ -25,7 +34,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProductsPage() {
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const currentCategory = (resolvedSearchParams?.category as string) || 'all';
+  const validTags = currentCategory !== 'all' ? categoryTagMap[currentCategory] : null;
+  const filteredProducts = validTags 
+    ? products.filter(p => validTags.includes(p.tag))
+    : products;
+
   return (
     <>
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
@@ -44,26 +64,41 @@ export default function ProductsPage() {
         <div className="mt-12 flex flex-wrap justify-center gap-8 sm:gap-12">
           <Link
             href="/products"
-            className="group flex flex-col items-center gap-4 transition-transform hover:-translate-y-1"
+            scroll={false}
+            className={`group flex flex-col items-center gap-4 transition-transform hover:-translate-y-1`}
           >
-            <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border border-blue-700 bg-blue-700 text-white shadow-md transition-all sm:h-20 sm:w-20">
+            <div className={`flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border transition-all sm:h-20 sm:w-20 ${
+              currentCategory === 'all'
+                ? 'border-blue-700 bg-blue-700 text-white shadow-md'
+                : 'border-slate-200 bg-white text-slate-600 group-hover:border-blue-700 group-hover:bg-blue-700 group-hover:text-white group-hover:shadow-md'
+            }`}>
               <LayoutGrid className="h-7 w-7 sm:h-8 sm:w-8" />
             </div>
-            <span className="text-[15px] font-semibold text-blue-700">All Products</span>
+            <span className={`text-[15px] font-semibold ${
+              currentCategory === 'all' ? 'text-blue-700' : 'text-slate-950'
+            }`}>All Products</span>
           </Link>
 
           {systemLandings.map((landing) => {
             const Icon = categoryIcons[landing.slug] || Monitor;
+            const isActive = currentCategory === landing.slug;
             return (
               <Link
                 key={landing.slug}
-                href={landing.href}
-                className="group flex flex-col items-center gap-4 transition-transform hover:-translate-y-1"
+                href={`/products?category=${landing.slug}`}
+                scroll={false}
+                className={`group flex flex-col items-center gap-4 transition-transform hover:-translate-y-1`}
               >
-                <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all group-hover:border-blue-700 group-hover:bg-blue-700 group-hover:text-white group-hover:shadow-md sm:h-20 sm:w-20">
+                <div className={`flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border transition-all sm:h-20 sm:w-20 ${
+                  isActive
+                    ? 'border-blue-700 bg-blue-700 text-white shadow-md'
+                    : 'border-slate-200 bg-white text-slate-600 group-hover:border-blue-700 group-hover:bg-blue-700 group-hover:text-white group-hover:shadow-md'
+                }`}>
                   <Icon className="h-7 w-7 sm:h-8 sm:w-8" />
                 </div>
-                <span className="text-[15px] font-semibold text-slate-950">{landing.title}</span>
+                <span className={`text-[15px] font-semibold ${
+                  isActive ? 'text-blue-700' : 'text-slate-950'
+                }`}>{landing.title}</span>
               </Link>
             );
           })}
@@ -82,9 +117,15 @@ export default function ProductsPage() {
           </div>
 
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            {products.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <ProductCard key={product.slug} product={product} />
+              ))
+            ) : (
+              <div className="col-span-3 py-20 text-center text-slate-500">
+                해당 카테고리에 등록된 제품이 없습니다.
+              </div>
+            )}
           </div>
         </div>
       </section>
