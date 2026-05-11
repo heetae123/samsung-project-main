@@ -44,13 +44,21 @@ export function MemberProductCard({ product }: MemberProductCardProps) {
         </Link>
         
         <div className="mt-auto pt-8">
-          <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-slate-400 line-through">{price.regular}</span>
-            <MemberPriceDisplay
-              value={price.member}
-              className="text-2xl font-bold tracking-[-0.04em] text-blue-700"
-              overlayLabel="회원 전용가"
-            />
+          <div className="flex items-end justify-between gap-4">
+            <div className="flex flex-col gap-1">
+              <span className="text-sm font-medium text-slate-400 line-through">{price.regular}</span>
+              <MemberPriceDisplay
+                value={price.member}
+                className="text-2xl font-bold tracking-[-0.04em] text-blue-700"
+                overlayLabel="회원 전용가"
+              />
+            </div>
+            <Link
+              href={`/contact?product=${encodeURIComponent(product.title)}`}
+              className="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 px-5 text-sm font-semibold text-white transition-all hover:bg-blue-700"
+            >
+              견적 요청
+            </Link>
           </div>
         </div>
       </div>
