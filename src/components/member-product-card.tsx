@@ -4,16 +4,6 @@ import Link from 'next/link';
 import type { ProductItem } from '@/lib/site';
 import { MemberPriceDisplay } from '@/components/member-price-display';
 
-const tagToSolutionSlug: Record<string, string> = {
-  '객실관리 시스템': 'room-management',
-  '호텔락 시스템': 'hotel-lock',
-  'QR·키리스 호텔락': 'hotel-lock',
-  '운영관리 프로그램': 'operation-management',
-  '무인 키오스크': 'kiosk',
-  '무인 관제 서비스': 'remote-monitoring',
-  '기타 자재': 'misc-materials',
-};
-
 type MemberProductCardProps = {
   product: ProductItem;
 };
@@ -32,12 +22,11 @@ const mockPrices: Record<string, { regular: string; member: string }> = {
 };
 
 export function MemberProductCard({ product }: MemberProductCardProps) {
-  const solutionSlug = tagToSolutionSlug[product.tag] || 'room-management';
   const price = mockPrices[product.slug] || { regular: '₩ 0', member: '₩ 0' };
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
-      <Link href={`/solutions/${solutionSlug}`} className="block relative aspect-[4/3] overflow-hidden bg-[#f3f7ff]">
+      <Link href={`/products/${product.slug}`} className="block relative aspect-[4/3] overflow-hidden bg-[#f3f7ff]">
         <Image
           src={product.image}
           alt={product.imageAlt}
@@ -48,7 +37,7 @@ export function MemberProductCard({ product }: MemberProductCardProps) {
       
       <div className="flex flex-1 flex-col p-6">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-700">{product.tag}</p>
-        <Link href={`/solutions/${solutionSlug}`}>
+        <Link href={`/products/${product.slug}`}>
           <h3 className="mt-3 text-xl font-bold tracking-[-0.04em] text-slate-950 transition-colors group-hover:text-blue-700">
             {product.title}
           </h3>
