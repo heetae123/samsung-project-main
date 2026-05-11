@@ -82,7 +82,7 @@ export function QuoteRequestForm({ product }: QuoteRequestFormProps) {
   }
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+    <section id="quote-request" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
       <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="rounded-[2rem] border border-slate-200 bg-[#0f1f3d] p-8 text-white shadow-[0_24px_80px_rgba(15,23,42,0.22)]">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-blue-300">Quote request</p>

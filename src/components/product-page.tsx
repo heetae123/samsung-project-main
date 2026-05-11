@@ -66,24 +66,16 @@ export function ProductPage({ product }: ProductPageProps) {
               {product.title}
             </h1>
             <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">{product.description}</p>
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="/products"
-                className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-6 py-4 text-sm font-semibold text-slate-950 transition-colors hover:border-slate-950 sm:text-base"
-              >
-                다른 제품 보기
-              </Link>
-              <Link
-                href="/member-mall"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-700 px-6 py-4 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-800 sm:text-base"
-              >
-                회원몰 보기
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-
             <div className="mt-10">
               <ProductPricingSummary slug={product.slug} />
+              <div className="mt-6">
+                <Link
+                  href="#quote-request"
+                  className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-6 py-4 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-slate-800 sm:w-auto sm:text-base"
+                >
+                  이 제품 견적 문의하기
+                </Link>
+              </div>
             </div>
           </div>
 
